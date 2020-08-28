@@ -8,61 +8,63 @@ import javax.servlet.ServletOutputStream;
 
 public class ResponseFacade implements ServletResponse {
 
-  private ServletResponse response;
-  public ResponseFacade(Response response) {
-    this.response = response;
-  }
+    private ServletResponse response;
 
-  public void flushBuffer() throws IOException {
-    response.flushBuffer();
-  }
+    public ResponseFacade(Response response) {
+        this.response = response;
+    }
 
-  public int getBufferSize() {
-    return response.getBufferSize();
-  }
 
-  public String getCharacterEncoding() {
-    return response.getCharacterEncoding();
-  }
+    public void flushBuffer() throws IOException {
+        response.flushBuffer();
+    }
 
-  public Locale getLocale() {
-    return response.getLocale();
-  }
+    public int getBufferSize() {
+        return response.getBufferSize();
+    }
 
-  public ServletOutputStream getOutputStream() throws IOException {
-    return response.getOutputStream();
-  }
+    public String getCharacterEncoding() {
+        return response.getCharacterEncoding();
+    }
 
-  public PrintWriter getWriter() throws IOException {
-    return response.getWriter();
-  }
+    public Locale getLocale() {
+        return response.getLocale();
+    }
 
-  public boolean isCommitted() {
-    return response.isCommitted();
-  }
+    public ServletOutputStream getOutputStream() throws IOException {
+        return response.getOutputStream();
+    }
 
-  public void reset() {
-    response.reset();
-  }
+    public PrintWriter getWriter() throws IOException {
+        return response.getWriter();
+    }
 
-  public void resetBuffer() {
-    response.resetBuffer();
-  }
+    public boolean isCommitted() {
+        return response.isCommitted();
+    }
 
-  public void setBufferSize(int size) {
-    response.setBufferSize(size);
-  }
+    public void reset() {
+        response.reset();
+    }
 
-  public void setContentLength(int length) {
-    response.setContentLength(length);
-  }
+    public void resetBuffer() {
+        response.resetBuffer();
+    }
 
-  public void setContentType(String type) {
-    response.setContentType(type);
-  }
+    public void setBufferSize(int size) {
+        response.setBufferSize(size);
+    }
 
-  public void setLocale(Locale locale) {
-    response.setLocale(locale);
-  }
+    public void setContentLength(int length) {
+        response.setContentLength(length);
+    }
+
+    public void setContentType(String type) {
+        response.setContentType(type);
+    }
+
+    public void setLocale(Locale locale) {
+        response.setLocale(locale);
+    }
 
 }
