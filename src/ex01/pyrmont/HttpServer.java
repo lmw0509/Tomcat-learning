@@ -31,13 +31,24 @@ public class HttpServer {
     }
 
     private void await() {
+        ServerSocket serverSocket = null;
+        try {
+            serverSocket = new ServerSocket(8080, 1, InetAddress.getByName("127.0.0.1"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
         // Loop waiting for a request
         while (!shutdown) {
-            try (ServerSocket serverSocket = new ServerSocket(8080, 1, InetAddress.getByName("127.0.0.1"));
-                 Socket socket = serverSocket.accept();
-                 InputStream input = socket.getInputStream();
-                 OutputStream output = socket.getOutputStream()
-            ) {
+            Socket socket;
+            InputStream input;
+            OutputStream output;
+            try {
+                socket = serverSocket.accept();
+                input = socket.getInputStream();
+                output = socket.getOutputStream();
+
                 // create Request object and parse
                 Request request = new Request(input);
                 request.parse();
@@ -52,7 +63,7 @@ public class HttpServer {
 
                 //check if the previous URI is a shutdown command
                 shutdown = request.getUri().equals(SHUTDOWN_COMMAND);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

@@ -5,19 +5,12 @@ import java.io.IOException;
 import java.io.FileInputStream;
 import java.io.File;
 
-/*
-  HTTP Response = Status-Line
-    *(( general-header | response-header | entity-header ) CRLF)
-    CRLF
-    [ message-body ]
-    Status-Line = HTTP-Version SP Status-Code SP Reason-Phrase CRLF
-*/
 
 public class Response {
 
     private static final int BUFFER_SIZE = 1024;
-    Request request;
-    OutputStream output;
+    private Request request;
+    private OutputStream output;
 
     public Response(OutputStream output) {
         this.output = output;
@@ -27,7 +20,7 @@ public class Response {
         this.request = request;
     }
 
-    public void sendStaticResource() throws IOException {
+    void sendStaticResource() throws IOException {
         byte[] bytes = new byte[BUFFER_SIZE];
         FileInputStream fis = null;
         try {
@@ -52,8 +45,9 @@ public class Response {
             // thrown if cannot instantiate a File object
             System.out.println(e.toString());
         } finally {
-            if (fis != null)
+            if (fis != null) {
                 fis.close();
+            }
         }
     }
 }
