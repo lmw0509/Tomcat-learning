@@ -25,17 +25,6 @@ public class Request implements ServletRequest {
         return uri;
     }
 
-    private String parseUri(String requestString) {
-        int index1, index2;
-        index1 = requestString.indexOf(' ');
-        if (index1 != -1) {
-            index2 = requestString.indexOf(' ', index1 + 1);
-            if (index2 > index1)
-                return requestString.substring(index1 + 1, index2);
-        }
-        return null;
-    }
-
     public void parse() {
         // Read a set of characters from the socket
         StringBuffer request = new StringBuffer(2048);
@@ -52,6 +41,18 @@ public class Request implements ServletRequest {
         }
         System.out.print(request.toString());
         uri = parseUri(request.toString());
+    }
+
+
+    private String parseUri(String requestString) {
+        int index1, index2;
+        index1 = requestString.indexOf(' ');
+        if (index1 != -1) {
+            index2 = requestString.indexOf(' ', index1 + 1);
+            if (index2 > index1)
+                return requestString.substring(index1 + 1, index2);
+        }
+        return null;
     }
 
     /* implementation of the ServletRequest*/

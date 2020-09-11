@@ -12,13 +12,12 @@ import javax.servlet.ServletResponse;
 public class ServletProcessor1 {
 
     public void process(Request request, Response response) {
-
         String uri = request.getUri();
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
 
+        // create a URLClassLoader
         try {
-            // create a URLClassLoader
             URL[] urls = new URL[1];
             URLStreamHandler streamHandler = null;
             File classPath = new File(Constants.WEB_ROOT);
@@ -34,6 +33,8 @@ public class ServletProcessor1 {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
+
+        // load servlet
         Class myClass = null;
         try {
             myClass = loader.loadClass(servletName);
@@ -41,7 +42,7 @@ public class ServletProcessor1 {
             System.out.println(e.toString());
         }
 
-
+        // 处理请求
         try {
             Servlet servlet = (Servlet) myClass.newInstance();
             servlet.service((ServletRequest) request, (ServletResponse) response);
@@ -50,6 +51,5 @@ public class ServletProcessor1 {
         } catch (Throwable e) {
             System.out.println(e.toString());
         }
-
     }
 }

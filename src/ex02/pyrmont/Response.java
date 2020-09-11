@@ -46,15 +46,17 @@ public class Response implements ServletResponse {
                     "<h1>File Not Found</h1>";
             output.write(errorMessage.getBytes());
         } finally {
-            if (fis != null)
+            if (fis != null) {
                 fis.close();
+            }
         }
     }
 
+    public PrintWriter getWriter() throws IOException {
+        // autoflush is true, println() will flush, but print() will not.
+        return new PrintWriter(output, true);
+    }
 
-    /**
-     * implementation of ServletResponse
-     */
     public void flushBuffer() throws IOException {
     }
 
@@ -72,11 +74,6 @@ public class Response implements ServletResponse {
 
     public ServletOutputStream getOutputStream() throws IOException {
         return null;
-    }
-
-    public PrintWriter getWriter() throws IOException {
-        // autoflush is true, println() will flush, but print() will not.
-        return new PrintWriter(output, true);
     }
 
     public boolean isCommitted() {
