@@ -7,8 +7,7 @@ import java.io.EOFException;
 import org.apache.catalina.util.StringManager;
 
 /**
- * Extends InputStream to be more efficient reading lines during HTTP
- * header processing.
+ * Extends InputStream to be more efficient reading lines during HTTP header processing.
  *
  * @author <a href="mailto:remm@apache.org">Remy Maucherat</a>
  * @deprecated

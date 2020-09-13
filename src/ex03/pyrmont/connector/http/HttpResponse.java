@@ -258,25 +258,25 @@ public class HttpResponse implements HttpServletResponse {
             }
         }
         // Add the session ID cookie if necessary
-/*    HttpServletRequest hreq = (HttpServletRequest) request.getRequest();
-    HttpSession session = hreq.getSession(false);
-    if ((session != null) && session.isNew() && (getContext() != null)
-      && getContext().getCookies()) {
-      Cookie cookie = new Cookie("JSESSIONID", session.getId());
-      cookie.setMaxAge(-1);
-      String contextPath = null;
-      if (context != null)
-        contextPath = context.getPath();
-      if ((contextPath != null) && (contextPath.length() > 0))
-        cookie.setPath(contextPath);
-      else
+        /*  HttpServletRequest hreq = (HttpServletRequest) request.getRequest();
+            HttpSession session = hreq.getSession(false);
+            if ((session != null) && session.isNew() && (getContext() != null)
+              && getContext().getCookies()) {
+              Cookie cookie = new Cookie("JSESSIONID", session.getId());
+              cookie.setMaxAge(-1);
+              String contextPath = null;
+              if (context != null)
+                contextPath = context.getPath();
+              if ((contextPath != null) && (contextPath.length() > 0))
+                cookie.setPath(contextPath);
+              else
 
-      cookie.setPath("/");
-      if (hreq.isSecure())
-        cookie.setSecure(true);
-      addCookie(cookie);
-    }
-*/
+              cookie.setPath("/");
+              if (hreq.isSecure())
+                cookie.setSecure(true);
+              addCookie(cookie);
+            }
+        */
         // Send all specified cookies (if any)
         synchronized (cookies) {
             Iterator items = cookies.iterator();
@@ -469,8 +469,7 @@ public class HttpResponse implements HttpServletResponse {
     public PrintWriter getWriter() throws IOException {
         ResponseStream newStream = new ResponseStream(this);
         newStream.setCommit(false);
-        OutputStreamWriter osr =
-                new OutputStreamWriter(newStream, getCharacterEncoding());
+        OutputStreamWriter osr = new OutputStreamWriter(newStream, getCharacterEncoding());
         writer = new ResponseWriter(osr);
         return writer;
     }

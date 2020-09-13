@@ -56,27 +56,32 @@ public class HttpRequest implements HttpServletRequest {
      * The request attributes for this request.
      */
     protected HashMap attributes = new HashMap();
+
     /**
      * The authorization credentials sent with this Request.
      */
     protected String authorization = null;
+
     /**
      * The context path for this request.
      */
     protected String contextPath = "";
+
     /**
      * The set of cookies associated with this Request.
      */
     protected ArrayList cookies = new ArrayList();
+
     /**
      * An empty collection to use for returning empty Enumerations.  Do not
      * add any elements to this collection!
      */
     protected static ArrayList empty = new ArrayList();
+
     /**
      * The set of SimpleDateFormat formats to use in getDateHeader().
      */
-    protected SimpleDateFormat formats[] = {
+    private SimpleDateFormat[] formats = {
             new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US),
             new SimpleDateFormat("EEEEEE, dd-MMM-yy HH:mm:ss zzz", Locale.US),
             new SimpleDateFormat("EEE MMMM d HH:mm:ss yyyy", Locale.US)
@@ -87,6 +92,7 @@ public class HttpRequest implements HttpServletRequest {
      * values are ArrayLists of the corresponding header values.
      */
     protected HashMap headers = new HashMap();
+
     /**
      * The parsed parameters for this request.  This is populated only if
      * parameter information is requested via one of the
@@ -105,6 +111,7 @@ public class HttpRequest implements HttpServletRequest {
      * Have the parameters for this request been parsed yet?
      */
     protected boolean parsed = false;
+
     protected String pathInfo = null;
 
     /**
@@ -139,42 +146,46 @@ public class HttpRequest implements HttpServletRequest {
      * If parameters are present in both the query string and the request
      * content, they are merged.
      */
-    protected void parseParameters() {
+    private void parseParameters() {
         if (parsed) {
             return;
         }
+
         ParameterMap results = parameters;
         if (results == null) {
             results = new ParameterMap();
         }
+
         results.setLocked(false);
         String encoding = getCharacterEncoding();
         if (encoding == null) {
             encoding = "ISO-8859-1";
         }
+
         // Parse any parameters specified in the query string
         String queryString = getQueryString();
         try {
             RequestUtil.parseParameters(results, queryString, encoding);
-        } catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException ignored) {
         }
 
         // Parse any parameters specified in the input stream
         String contentType = getContentType();
-        if (contentType == null)
+        if (contentType == null) {
             contentType = "";
+        }
         int semicolon = contentType.indexOf(';');
         if (semicolon >= 0) {
             contentType = contentType.substring(0, semicolon).trim();
         } else {
             contentType = contentType.trim();
         }
-        if ("POST".equals(getMethod()) && (getContentLength() > 0)
-                && "application/x-www-form-urlencoded".equals(contentType)) {
+
+        if ("POST".equals(getMethod()) && (getContentLength() > 0) && "application/x-www-form-urlencoded".equals(contentType)) {
             try {
                 int max = getContentLength();
                 int len = 0;
-                byte buf[] = new byte[getContentLength()];
+                byte[] buf = new byte[getContentLength()];
                 ServletInputStream is = getInputStream();
                 while (len < max) {
                     int next = is.read(buf, len, max - len);
@@ -188,7 +199,7 @@ public class HttpRequest implements HttpServletRequest {
                     throw new RuntimeException("Content length mismatch");
                 }
                 RequestUtil.parseParameters(results, buf, encoding);
-            } catch (UnsupportedEncodingException ue) {
+            } catch (UnsupportedEncodingException ignored) {
 
             } catch (IOException e) {
                 throw new RuntimeException("Content read fail");
@@ -215,7 +226,7 @@ public class HttpRequest implements HttpServletRequest {
      *
      * @throws IOException if an input/output error occurs
      */
-    public ServletInputStream createInputStream() throws IOException {
+    private ServletInputStream createInputStream() throws IOException {
         return (new RequestStream(this));
     }
 
@@ -236,10 +247,11 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public void setContextPath(String path) {
-        if (path == null)
+        if (path == null) {
             this.contextPath = "";
-        else
+        } else {
             this.contextPath = path;
+        }
     }
 
     public void setMethod(String method) {
@@ -303,7 +315,6 @@ public class HttpRequest implements HttpServletRequest {
         requestedSessionURL = flag;
     }
 
-    /* implementation of the HttpServletRequest*/
     public Object getAttribute(String name) {
         synchronized (attributes) {
             return (attributes.get(name));
@@ -338,17 +349,19 @@ public class HttpRequest implements HttpServletRequest {
 
     public Cookie[] getCookies() {
         synchronized (cookies) {
-            if (cookies.size() < 1)
-                return (null);
-            Cookie results[] = new Cookie[cookies.size()];
+            if (cookies.size() < 1) {
+                return null;
+            }
+            Cookie[] results = new Cookie[cookies.size()];
             return ((Cookie[]) cookies.toArray(results));
         }
     }
 
     public long getDateHeader(String name) {
         String value = getHeader(name);
-        if (value == null)
+        if (value == null) {
             return (-1L);
+        }
 
         // Work around a bug in SimpleDateFormat in pre-JDK1.2b4
         // (Bug Parade bug #4106807)
@@ -359,7 +372,7 @@ public class HttpRequest implements HttpServletRequest {
             try {
                 Date date = formats[i].parse(value);
                 return (date.getTime());
-            } catch (ParseException e) {
+            } catch (ParseException ignored) {
             }
         }
         throw new IllegalArgumentException(value);
@@ -369,10 +382,12 @@ public class HttpRequest implements HttpServletRequest {
         name = name.toLowerCase();
         synchronized (headers) {
             ArrayList values = (ArrayList) headers.get(name);
-            if (values != null)
+            if (values != null) {
                 return ((String) values.get(0));
-            else
+            } else {
                 return null;
+
+            }
         }
     }
 
@@ -386,28 +401,32 @@ public class HttpRequest implements HttpServletRequest {
         name = name.toLowerCase();
         synchronized (headers) {
             ArrayList values = (ArrayList) headers.get(name);
-            if (values != null)
+            if (values != null) {
                 return (new Enumerator(values));
-            else
+            } else {
                 return (new Enumerator(empty));
+            }
         }
     }
 
     public ServletInputStream getInputStream() throws IOException {
-        if (reader != null)
+        if (reader != null) {
             throw new IllegalStateException("getInputStream has been called");
+        }
 
-        if (stream == null)
+        if (stream == null) {
             stream = createInputStream();
+        }
         return (stream);
     }
 
     public int getIntHeader(String name) {
         String value = getHeader(name);
-        if (value == null)
+        if (value == null) {
             return (-1);
-        else
+        } else {
             return (Integer.parseInt(value));
+        }
     }
 
     public Locale getLocale() {
@@ -424,11 +443,12 @@ public class HttpRequest implements HttpServletRequest {
 
     public String getParameter(String name) {
         parseParameters();
-        String values[] = (String[]) parameters.get(name);
-        if (values != null)
+        String[] values = (String[]) parameters.get(name);
+        if (values != null) {
             return (values[0]);
-        else
+        } else {
             return (null);
+        }
     }
 
     public Map getParameterMap() {
@@ -443,11 +463,12 @@ public class HttpRequest implements HttpServletRequest {
 
     public String[] getParameterValues(String name) {
         parseParameters();
-        String values[] = (String[]) parameters.get(name);
-        if (values != null)
+        String[] values = (String[]) parameters.get(name);
+        if (values != null) {
             return (values);
-        else
+        } else {
             return null;
+        }
     }
 
     public String getPathInfo() {
@@ -467,14 +488,15 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public BufferedReader getReader() throws IOException {
-        if (stream != null)
+        if (stream != null) {
             throw new IllegalStateException("getInputStream has been called.");
+        }
         if (reader == null) {
             String encoding = getCharacterEncoding();
-            if (encoding == null)
+            if (encoding == null) {
                 encoding = "ISO-8859-1";
-            InputStreamReader isr =
-                    new InputStreamReader(createInputStream(), encoding);
+            }
+            InputStreamReader isr = new InputStreamReader(createInputStream(), encoding);
             reader = new BufferedReader(isr);
         }
         return (reader);
