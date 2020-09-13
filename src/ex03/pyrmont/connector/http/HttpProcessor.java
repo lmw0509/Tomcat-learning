@@ -12,29 +12,22 @@ import javax.servlet.http.Cookie;
 import org.apache.catalina.util.RequestUtil;
 import org.apache.catalina.util.StringManager;
 
-/* this class used to be called HttpServer */
 public class HttpProcessor {
+    private HttpConnector connector;
+    private HttpRequest request;
+    private HttpResponse response;
+    private HttpRequestLine requestLine = new HttpRequestLine();
+    protected String method = null;
+    protected String queryString = null;
 
     HttpProcessor(HttpConnector connector) {
         this.connector = connector;
     }
 
     /**
-     * The HttpConnector with which this processor is associated.
+     * 获取国际化信息
      */
-    private HttpConnector connector = null;
-    private HttpRequest request;
-    private HttpRequestLine requestLine = new HttpRequestLine();
-    private HttpResponse response;
-
-    protected String method = null;
-    protected String queryString = null;
-
-    /**
-     * The string manager for this package.
-     */
-    protected StringManager sm =
-            StringManager.getManager("ex03.pyrmont.connector.http");
+    protected StringManager sm = StringManager.getManager("ex03.pyrmont.connector.http");
 
     public void process(Socket socket) {
         SocketInputStream input;
@@ -43,16 +36,13 @@ public class HttpProcessor {
             input = new SocketInputStream(socket.getInputStream(), 2048);
             output = socket.getOutputStream();
 
-            // create HttpRequest object and parse
             request = new HttpRequest(input);
 
-            // create HttpResponse object
             response = new HttpResponse(output);
             response.setRequest(request);
-
             response.setHeader("Server", "Pyrmont Servlet Container");
 
-            parseRequest(input, output);
+            parseRequest(input);
             parseHeaders(input);
 
             //check if this is a request for a servlet or a static resource
@@ -67,6 +57,7 @@ public class HttpProcessor {
 
             // Close the socket
             socket.close();
+
             // no shutdown for this application
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,9 +91,10 @@ public class HttpProcessor {
             String name = new String(header.name, 0, header.nameEnd);
             String value = new String(header.value, 0, header.valueEnd);
             request.addHeader(name, value);
+
             // do something for some headers, ignore others.
             if (name.equals("cookie")) {
-                Cookie cookies[] = RequestUtil.parseCookieHeader(value);
+                Cookie[] cookies = RequestUtil.parseCookieHeader(value);
                 for (int i = 0; i < cookies.length; i++) {
                     if (cookies[i].getName().equals("jsessionid")) {
                         // Override anything requested in the URL
@@ -126,18 +118,16 @@ public class HttpProcessor {
             } else if (name.equals("content-type")) {
                 request.setContentType(value);
             }
-        } //end while
+        }
     }
 
 
-    private void parseRequest(SocketInputStream input, OutputStream output)
-            throws IOException, ServletException {
-
+    private void parseRequest(SocketInputStream input) throws IOException, ServletException {
         // Parse the incoming request line
         input.readRequestLine(requestLine);
         String method = new String(requestLine.method, 0, requestLine.methodEnd);
-        String uri = null;
         String protocol = new String(requestLine.protocol, 0, requestLine.protocolEnd);
+        String uri;
 
         // Validate the incoming request line
         if (method.length() < 1) {
@@ -145,17 +135,16 @@ public class HttpProcessor {
         } else if (requestLine.uriEnd < 1) {
             throw new ServletException("Missing HTTP request URI");
         }
+
         // Parse any query parameters out of the request URI
-        int question = requestLine.indexOf("?");
-        if (question >= 0) {
-            request.setQueryString(new String(requestLine.uri, question + 1,
-                    requestLine.uriEnd - question - 1));
-            uri = new String(requestLine.uri, 0, question);
+        int questionIndex = requestLine.indexOf("?");
+        if (questionIndex >= 0) {
+            request.setQueryString(new String(requestLine.uri, questionIndex + 1, requestLine.uriEnd - questionIndex - 1));
+            uri = new String(requestLine.uri, 0, questionIndex);
         } else {
             request.setQueryString(null);
             uri = new String(requestLine.uri, 0, requestLine.uriEnd);
         }
-
 
         // Checking for an absolute URI (with the HTTP protocol)
         if (!uri.startsWith("/")) {
@@ -285,7 +274,5 @@ public class HttpProcessor {
 
         // Return the normalized path that we have completed
         return (normalized);
-
     }
-
 }

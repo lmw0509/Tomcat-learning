@@ -1,11 +1,5 @@
 package ex03.pyrmont.connector.http;
 
-/**
- * this class copies methods from org.apache.catalina.connector.HttpRequestBase
- * and org.apache.catalina.connector.http.HttpRequestImpl.
- * The HttpRequestImpl class employs a pool of HttpHeader objects for performance
- * These two classes will be explained in Chapter 4.
- */
 
 import ex03.pyrmont.connector.RequestStream;
 
@@ -35,6 +29,12 @@ import org.apache.catalina.util.Enumerator;
 import org.apache.catalina.util.ParameterMap;
 import org.apache.catalina.util.RequestUtil;
 
+/**
+ * this class copies methods from org.apache.catalina.connector.HttpRequestBase
+ * and org.apache.catalina.connector.http.HttpRequestImpl.
+ * The HttpRequestImpl class employs a pool of HttpHeader objects for performance
+ * These two classes will be explained in Chapter 4.
+ */
 public class HttpRequest implements HttpServletRequest {
 
     private String contentType;
@@ -140,16 +140,18 @@ public class HttpRequest implements HttpServletRequest {
      * content, they are merged.
      */
     protected void parseParameters() {
-        if (parsed)
+        if (parsed) {
             return;
+        }
         ParameterMap results = parameters;
-        if (results == null)
+        if (results == null) {
             results = new ParameterMap();
+        }
         results.setLocked(false);
         String encoding = getCharacterEncoding();
-        if (encoding == null)
+        if (encoding == null) {
             encoding = "ISO-8859-1";
-
+        }
         // Parse any parameters specified in the query string
         String queryString = getQueryString();
         try {
@@ -358,7 +360,6 @@ public class HttpRequest implements HttpServletRequest {
                 Date date = formats[i].parse(value);
                 return (date.getTime());
             } catch (ParseException e) {
-                ;
             }
         }
         throw new IllegalArgumentException(value);
@@ -569,11 +570,6 @@ public class HttpRequest implements HttpServletRequest {
     public void setAttribute(String key, Object value) {
     }
 
-    /**
-     * Set the authorization credentials sent with this request.
-     *
-     * @param authorization The new authorization credentials
-     */
     public void setAuthorization(String authorization) {
         this.authorization = authorization;
     }

@@ -18,17 +18,22 @@ public class HttpConnector implements Runnable {
             e.printStackTrace();
             System.exit(1);
         }
+
         while (true) {
             // Accept the next incoming connection from the server socket
             Socket socket;
             try {
+                // 等待http请求
                 socket = serverSocket.accept();
             } catch (Exception e) {
                 continue;
             }
 
             // Hand this socket off to an HttpProcessor
+            // 创建HttpProcessor实例
             HttpProcessor processor = new HttpProcessor(this);
+
+            // 处理请求
             processor.process(socket);
         }
     }

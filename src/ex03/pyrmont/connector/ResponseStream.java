@@ -1,6 +1,7 @@
 package ex03.pyrmont.connector;
 
 import ex03.pyrmont.connector.http.HttpResponse;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import javax.servlet.ServletOutputStream;
@@ -17,10 +18,7 @@ import javax.servlet.ServletOutputStream;
  */
 
 public class ResponseStream extends ServletOutputStream {
-
-
     // ----------------------------------------------------------- Constructors
-
 
     /**
      * Construct a servlet output stream associated with the specified Request.
@@ -28,20 +26,16 @@ public class ResponseStream extends ServletOutputStream {
      * @param response The associated response
      */
     public ResponseStream(HttpResponse response) {
-
         super();
         closed = false;
         commit = false;
         count = 0;
         this.response = response;
-      //  this.stream = response.getStream();
-
+        //  this.stream = response.getStream();
     }
 
 
     // ----------------------------------------------------- Instance Variables
-
-
     /**
      * Has this stream been closed?
      */
@@ -86,9 +80,7 @@ public class ResponseStream extends ServletOutputStream {
      * [Package Private] Return the "commit response on flush" flag.
      */
     public boolean getCommit() {
-
         return (this.commit);
-
     }
 
 
@@ -98,9 +90,7 @@ public class ResponseStream extends ServletOutputStream {
      * @param commit The new commit flag
      */
     public void setCommit(boolean commit) {
-
         this.commit = commit;
-
     }
 
 
@@ -123,12 +113,11 @@ public class ResponseStream extends ServletOutputStream {
      * Flush any buffered data for this output stream, which also causes the
      * response to be committed.
      */
-  public void flush() throws IOException {
-    if (closed)
+    public void flush() throws IOException {
+        if (closed)
             throw new IOException("responseStream.flush.closed");
-       if (commit)
+        if (commit)
             response.flushBuffer();
-
     }
 
 
@@ -136,11 +125,9 @@ public class ResponseStream extends ServletOutputStream {
      * Write the specified byte to our output stream.
      *
      * @param b The byte to be written
-     *
-     * @exception IOException if an input/output error occurs
+     * @throws IOException if an input/output error occurs
      */
     public void write(int b) throws IOException {
-
         if (closed)
             throw new IOException("responseStream.write.closed");
 
@@ -149,13 +136,11 @@ public class ResponseStream extends ServletOutputStream {
 
         response.write(b);
         count++;
-
     }
 
 
     public void write(byte b[]) throws IOException {
         write(b, 0, b.length);
-
     }
 
 
@@ -170,7 +155,6 @@ public class ResponseStream extends ServletOutputStream {
         count += actual;
         if (actual < len)
             throw new IOException("responseStream.write.count");
-
     }
 
 
@@ -182,7 +166,6 @@ public class ResponseStream extends ServletOutputStream {
      */
     boolean closed() {
         return (this.closed);
-
     }
 
 
@@ -190,11 +173,7 @@ public class ResponseStream extends ServletOutputStream {
      * Reset the count of bytes written to this stream to zero.
      */
     void reset() {
-
         count = 0;
-
     }
-
-
 }
 
