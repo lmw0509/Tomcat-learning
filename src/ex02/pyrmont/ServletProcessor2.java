@@ -12,11 +12,9 @@ import javax.servlet.ServletResponse;
 public class ServletProcessor2 {
 
     public void process(Request request, Response response) {
-
         String uri = request.getUri();
         String servletName = uri.substring(uri.lastIndexOf("/") + 1);
         URLClassLoader loader = null;
-
         try {
             // create a URLClassLoader
             URL[] urls = new URL[1];
@@ -34,6 +32,7 @@ public class ServletProcessor2 {
         } catch (IOException e) {
             System.out.println(e.toString());
         }
+
         Class myClass = null;
         try {
             myClass = loader.loadClass(servletName);

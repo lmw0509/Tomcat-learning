@@ -20,7 +20,7 @@ public class HttpServer2 {
         server.await();
     }
 
-    public void await() {
+    private void await() {
         ServerSocket serverSocket = null;
         int port = 8080;
         try {
@@ -32,9 +32,9 @@ public class HttpServer2 {
 
         // Loop waiting for a request
         while (!shutdown) {
-            Socket socket = null;
-            InputStream input = null;
-            OutputStream output = null;
+            Socket socket;
+            InputStream input;
+            OutputStream output;
             try {
                 socket = serverSocket.accept();
                 input = socket.getInputStream();
@@ -60,6 +60,7 @@ public class HttpServer2 {
 
                 // Close the socket
                 socket.close();
+
                 //check if the previous URI is a shutdown command
                 shutdown = request.getUri().equals(SHUTDOWN_COMMAND);
             } catch (Exception e) {

@@ -45,6 +45,10 @@ public class ServletProcessor1 {
         // 处理请求
         try {
             Servlet servlet = (Servlet) myClass.newInstance();
+
+            // 向上转型为ServletRequest/ServletResponse
+            // servlet程序员在service方法中将request向下转型可以访问parse方法
+            // 可以采用门面模式限制访问权限，只能访问接口中的方法
             servlet.service((ServletRequest) request, (ServletResponse) response);
         } catch (Exception e) {
             System.out.println(e.toString());

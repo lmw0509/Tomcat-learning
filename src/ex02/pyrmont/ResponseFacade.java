@@ -10,10 +10,9 @@ public class ResponseFacade implements ServletResponse {
 
     private ServletResponse response;
 
-    public ResponseFacade(Response response) {
+    ResponseFacade(Response response) {
         this.response = response;
     }
-
 
     public void flushBuffer() throws IOException {
         response.flushBuffer();
@@ -66,5 +65,4 @@ public class ResponseFacade implements ServletResponse {
     public void setLocale(Locale locale) {
         response.setLocale(locale);
     }
-
 }
